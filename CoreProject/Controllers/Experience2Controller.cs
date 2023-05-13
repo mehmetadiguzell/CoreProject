@@ -1,0 +1,48 @@
+﻿using Business.Concrete;
+using DataAccess.EntityFramework;
+using Entity.Concrete;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
+namespace CoreProject.Controllers
+{
+    public class Experience2Controller : Controller
+    {
+        ExperienceManager experienceManager = new ExperienceManager(new EfExperienceDal());
+        public IActionResult Index()
+        {
+            return View();
+        }
+        public IActionResult ListExperience()
+        {
+            var values = JsonConvert.SerializeObject(experienceManager.TGetList());
+            return Json(values);
+        }
+        [HttpPost]
+        public IActionResult AddExperience(Experience p)
+        {
+            experienceManager.TAdd(p);
+            var values = JsonConvert.SerializeObject(p);
+            return Json(values);
+        }
+        public IActionResult GetById(int ExperienceID)
+        {
+            var v = experienceManager.TGetById(ExperienceID);
+            var values = JsonConvert.SerializeObject(v);
+            return Json(values);
+        }
+        public IActionResult DeleteExperience(int id)
+        {
+            var v = experienceManager.TGetById(id);
+            experienceManager.TDelete(v);
+            return NoContent();
+        }
+        public IActionResult UpdateExperince(Experience p)
+        {
+            var v = experienceManager.TGetById(p.ExperienceID);
+            experienceManager.TUpdate(v);
+            var values = JsonConvert.SerializeObject(p);
+            return Json(values);
+        }
+    }
+}
